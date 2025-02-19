@@ -31,7 +31,7 @@ class UserC {
       const user = await User.findByPk(id);
 
       if(!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ errors: ['User not found'] });
       }
 
       const { password, password_hash, ...showUser } = user.toJSON();
@@ -47,13 +47,13 @@ class UserC {
       const { id } = req.params;
 
       if(!id) {
-        return res.status(400).json({ error: 'ID is required' });
+        return res.status(400).json({ errors: ['ID is required'] });
       }
 
       const user = await User.findByPk(id);
 
       if(!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ errors: ['User not found'] });
       }
 
       const updatedUser = await user.update(req.body);
@@ -71,18 +71,18 @@ class UserC {
       const { id } = req.params;
 
       if(!id) {
-        return res.status(400).json({ error: 'ID is required' });
+        return res.status(400).json({ errors: ['ID is required'] });
       }
 
       const user = await User.findByPk(id);
 
       if(!user) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ errors: ['User not found'] });
       }
 
       await user.destroy();
 
-      return res.status(200).json({ message: 'User deleted' });
+      return res.status(200).json(null);
     } catch (err) {
       return res.json({ errors: err.errors.map((error) => error.message) });
     }

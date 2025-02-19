@@ -1,6 +1,6 @@
 class Home {
   index(req, res) {
-    res.json({ message: 'Hello World!' });
+    res.json("OK");
   }
 }
 
