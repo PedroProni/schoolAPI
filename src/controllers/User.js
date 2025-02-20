@@ -1,4 +1,5 @@
 import User from "../models/User";
+import jwt from "jsonwebtoken";
 
 class UserC {
   async create(req, res) {
@@ -7,7 +8,14 @@ class UserC {
 
       const user = await User.create(newUser);
 
-      return res.status(200).json(user);
+      const { id } = user.toJSON();
+      const { email } = user.toJSON();
+
+      const token = jwt.sign({ id, email }, process.env.TOKEN_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRATION,
+      });
+
+      res.status(201).json({ token: [token] });
     } catch (err) {
       return res
         .status(400)
@@ -17,7 +25,7 @@ class UserC {
 
   async index(req, res) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({ attributes: ["id", "name", "email"] });
 
       return res.status(200).json(users);
     } catch (err) {
@@ -27,11 +35,10 @@ class UserC {
 
   async show(req, res) {
     try {
-      const { id } = req.params;
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
-      if(!user) {
-        return res.status(404).json({ errors: ['User not found'] });
+      if (!user) {
+        return res.status(404).json({ errors: ["User not found"] });
       }
 
       const { password, password_hash, ...showUser } = user.toJSON();
@@ -44,16 +51,10 @@ class UserC {
 
   async update(req, res) {
     try {
-      const { id } = req.params;
+      const user = await User.findByPk(req.userId);
 
-      if(!id) {
-        return res.status(400).json({ errors: ['ID is required'] });
-      }
-
-      const user = await User.findByPk(id);
-
-      if(!user) {
-        return res.status(404).json({ errors: ['User not found'] });
+      if (!user) {
+        return res.status(404).json({ errors: ["User not found"] });
       }
 
       const updatedUser = await user.update(req.body);
@@ -68,16 +69,10 @@ class UserC {
 
   async delete(req, res) {
     try {
-      const { id } = req.params;
+      const user = await User.findByPk(req.userId);
 
-      if(!id) {
-        return res.status(400).json({ errors: ['ID is required'] });
-      }
-
-      const user = await User.findByPk(id);
-
-      if(!user) {
-        return res.status(404).json({ errors: ['User not found'] });
+      if (!user) {
+        return res.status(404).json({ errors: ["User not found"] });
       }
 
       await user.destroy();
@@ -87,8 +82,6 @@ class UserC {
       return res.json({ errors: err.errors.map((error) => error.message) });
     }
   }
-
-
 }
 
 export default new UserC();
