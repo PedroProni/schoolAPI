@@ -8,7 +8,7 @@ class StudentC {
       order: [["updated_at", "DESC"], [Photo, "id", "ASC"]],
       include: {
         model: Photo,
-        attributes: ["id", "filename", "original_filename"],
+        attributes: ["id", "filename", "original_filename", "url"],
       },
     });
 
@@ -31,7 +31,7 @@ class StudentC {
       ],
       include: {
         model: Photo,
-        attributes: ["id", "filename", "original_filename"],
+        attributes: ["id", "filename", "original_filename", "url"],
       },
     });
     if (!student) {
