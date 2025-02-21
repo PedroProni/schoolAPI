@@ -1,8 +1,16 @@
 import Student from "../models/Student";
+import Photo from "../models/Photo";
 
 class StudentC {
   async index(req, res) {
-    const students = await Student.findAll();
+    const students = await Student.findAll({
+      attributes: ["id", "name", "surname" ,"email", "age", "weight", "height"],
+      order: [["updated_at", "DESC"], [Photo, "id", "ASC"]],
+      include: {
+        model: Photo,
+        attributes: ["id", "filename", "original_filename"],
+      },
+    });
 
     res.status(200).json(students);
   }
@@ -15,7 +23,17 @@ class StudentC {
       return res.status(400).json({ errors: ["ID is required"] });
     }
 
-    const student = await Student.findByPk(id);
+    const student = await Student.findByPk(id, {
+      attributes: ["id", "name", "surname", "email", "age", "weight", "height"],
+      order: [
+        ["updated_at", "DESC"],
+        [Photo, "id", "ASC"],
+      ],
+      include: {
+        model: Photo,
+        attributes: ["id", "filename", "original_filename"],
+      },
+    });
     if (!student) {
       return res.status(404).json({ errors: ["Student not found"] });
     }

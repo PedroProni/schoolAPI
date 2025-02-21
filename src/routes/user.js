@@ -10,7 +10,7 @@ const router = new Router();
   router.get("/find", loginRequired, user.show);
 */
 
-router.post("/", user.create);
+router.post("/", loginRequired, user.create); // Para testar essa aplicação será necessário remover o loginRequired para criar seu usuário.
 router.put("/", loginRequired, user.update);
 router.delete("/", loginRequired, user.delete);
 
