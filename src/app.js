@@ -3,14 +3,14 @@ import path from 'path';
 
 dotenv.config();
 
-import './src/database';
+import './database';
 
 import express from 'express';
-import home from './src/routes/home';
-import user from './src/routes/user';
-import token from './src/routes/token';
-import student from './src/routes/student';
-import photo from './src/routes/photo';
+import home from './routes/home';
+import user from './routes/user';
+import token from './routes/token';
+import student from './routes/student';
+import photo from './routes/photo';
 
 class App {
   constructor() {
